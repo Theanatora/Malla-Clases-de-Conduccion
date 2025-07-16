@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla de Clases Conducción</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"> <!-- Fuente Poppins -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Aplicar Poppins a todo el documento */
+            background-color: rgb(251, 234, 255);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 3em; /* Aumentar el tamaño del título */
+            color: rgb(124, 191, 253); /* Color del título */
+            text-shadow: 2px 2px 0 #007bff,  /* Sombra para el borde */
+                         -2px -2px 0 #007bff,
+                         2px -2px 0 #007bff,
+                         -2px 2px 0 #007bff; 
+            /* Esto crea un efecto de borde alrededor del texto del título */
+        }
+        #contador-transversales, #contador-mecanicas, #contador-general {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        .tabla-clases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 80%;
+        }
+        .clase {
+            background-color: #ffffff;
+            border: 5px solid #007bff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .clase:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .completada {
+            background-color: rgb(134, 255, 134); /* Cambiar a verde */
+            color: white; /* Cambiar el texto a blanco */
+            text-decoration: line-through; /* Mantener la línea de tachado */
+        }
+        .seccion {
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .titulo-seccion {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        .mensaje-completado {
+            font-size: 3em; /* Aumentar el tamaño del mensaje de completado */
+            color: rgb(123, 255, 123); /* Color del texto */
+            display: none; /* Ocultar por defecto */
+            margin-top: 20px;
+            text-shadow: 2px 2px 0 #06cf10,  /* Sombra para el borde */
+                         -2px -2px 0 #06cf10,
+                         2px -2px 0 #06cf10,
+                         -2px 2px 0 #06cf10; 
+            /* Esto crea un efecto de borde alrededor del texto */
+        }
+    </style>
+</head>
+<body>
+
+<h2>Malla de Clases</h2>
+<div id="contador-transversales">Clases transversales completadas: 0 / 15</div>
+<div id="contador-mecanicas">Clases mecánicas completadas: 0 / 3</div>
+<div id="contador-general">Estado general: No completado</div>
+<div class="mensaje-completado" id="mensaje-completado">¡Completado!</div>
+
+<div class="seccion">
+    <div class="titulo-seccion">Clases Transversales</div>
+    <div class="tabla-clases">
+        <div class="clase" onclick="marcar(this, 'transversales')">Espacio Público</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Victimas y Visión Cero</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Usuarios Vulnerables y la Corresponsabilidad</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">La Conducción y la Circulación</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Movilidad Sostenible y Omisión de Socorro</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Estructura CNTT</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Documento y Restricciones</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Actores Viales e Infracciones</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Factores de Riesgo I-II</div> 
+        <div class="clase" onclick="marcar(this, 'transversales')">Factores de Riesgo III y Lugares Preferenciales</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Señales de Tránsito</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Las Vías</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Infraestructura</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Saber específico I</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Saber específico II</div>
+        <div class="clase" onclick="marcar(this, 'transversales')">Saber específico III</div>
+    </div>
+</div>
+
+<div class="seccion">
+    <div class="titulo-seccion">Clases Mecánicas</div>
+    <div class="tabla-clases">
+        <div class="clase" onclick="marcar(this, 'mecanicas')">Reconocimiento del Vehículo</div>
+        <div class="clase" onclick="marcar(this, 'mecanicas')">Elementos de seguridad</div>
+        <div class="clase" onclick="marcar(this, 'mecanicas')">Equipos de Prevención</div>
+    </div>
+</div>
+
+<script>
+    let clasesCompletadasTransversales = 0;
+    let clasesCompletadasMecanicas = 0;
+    const totalClasesTransversales = 15; // Total de clases transversales
+    const totalClasesMecanicas = 3; // Total de clases mecánicas
+
+    // Cargar el estado guardado al iniciar
+    window.onload = function() {
+        cargarEstado();
+        actualizarContadorGeneral();
+    };
+
+    function marcar(element, tipo) {
+        if (tipo === 'transversales') {
+            if (!element.classList.contains("completada")) {
+                element.classList.add("completada");
+                clasesCompletadasTransversales++;
+            } else {
+                element.classList.remove("completada");
+                clasesCompletadasTransversales--;
+            }
+            actualizarContadorTransversales();
+        } else if (tipo === 'mecanicas') {
+            if (!element.classList.contains("completada")) {
+                element.classList.add("completada");
+                clasesCompletadasMecanicas++;
+            } else {
+                element.classList.remove("completada");
+                clasesCompletadasMecanicas--;
+            }
+            actualizarContadorMecanicas();
+        }
+        actualizarContadorGeneral();
+        guardarEstado(); // Guardar el estado después de cada cambio
+    }
+
+    function actualizarContadorTransversales() {
+        const contador = document.getElementById("contador-transversales");
+        contador.innerText = `Clases transversales completadas: ${clasesCompletadasTransversales} / ${totalClasesTransversales}`;
+    }
+
+    function actualizarContadorMecanicas() {
+        const contador = document.getElementById("contador-mecanicas");
+        contador.innerText = `Clases mecánicas completadas: ${clasesCompletadasMecanicas} / ${totalClasesMecanicas}`;
+    }
+
+    function actualizarContadorGeneral() {
+        const contadorGeneral = document.getElementById("contador-general");
+        const mensajeCompletado = document.getElementById("mensaje-completado");
+        if (clasesCompletadasTransversales === totalClasesTransversales && clasesCompletadasMecanicas === totalClasesMecanicas) {
+            contadorGeneral.innerText = "Estado general: Completado";
+            mensajeCompletado.style.display = "block"; // Mostrar mensaje
+        } else {
+            contadorGeneral.innerText = "Estado general: No completado";
+            mensajeCompletado.style.display = "none"; // Ocultar mensaje
+        }
+    }
+
+    function guardarEstado() {
+        const estado = {
+            transversales: clasesCompletadasTransversales,
+            mecanicas: clasesCompletadasMecanicas,
+            clases: []
+        };
+        document.querySelectorAll('.clase').forEach((clase, index) => {
+            estado.clases[index] = clase.classList.contains("completada");
+        });
+        localStorage.setItem('estadoClases', JSON.stringify(estado));
+    }
+
+    function cargarEstado() {
+        const estadoGuardado = JSON.parse(localStorage.getItem('estadoClases'));
+        if (estadoGuardado) {
+            clasesCompletadasTransversales = estadoGuardado.transversales;
+            clasesCompletadasMecanicas = estadoGuardado.mecanicas;
+            document.querySelectorAll('.clase').forEach((clase, index) => {
+                if (estadoGuardado.clases[index]) {
+                    clase.classList.add("completada");
+                }
+            });
+            // Actualizar contadores después de cargar el estado
+            actualizarContadorTransversales();
+            actualizarContadorMecanicas();
+        }
+    }
+</script>
+
+</body>
+</html>
